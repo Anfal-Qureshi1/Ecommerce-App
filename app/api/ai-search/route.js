@@ -1,30 +1,50 @@
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";
 
-const client = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+const client = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY
 });
 
 
 export async function POST(request) {
-    const { query} = await request.json();
-    const aiRes = await client.responses.create({
-    model: "gemini-1.3",
-    messages: [
-    {
-      role: "user",
-      content: "Convert this into a short product keyword : " + query,
-    },
-  ],
-});
 
-    const keyword = aiRes.output[0].content[0].trim();
-    await connectDB();
-    const products = await Product.find({
-        title: { $regex: keyword, $options: "i" },
+    const { query } = await request.json();
+
+    const aiRes = await client.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [
+            {
+                role: "user",
+                parts: [
+                    {
+                        text:
+                        "Your output should be just one word. Convert this into a short product keyword: " 
+                        + query
+                    }
+                ]
+            }
+        ],
     });
 
-    return Response.json(products);
 
+    const keyword = aiRes.text.trim();
+
+    console.log("User query:", query);
+    console.log("AI-generated keyword:", keyword);
+
+
+    await connectDB();
+
+
+    const products = await Product.find({
+        $or: [
+            { title: { $regex: keyword, $options: "i" } },
+            { description: { $regex: keyword, $options: "i" } },
+            { category: { $regex: keyword, $options: "i" } }
+        ]
+    });
+
+
+    return Response.json(products);
 }
