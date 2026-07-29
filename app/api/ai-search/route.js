@@ -3,13 +3,26 @@ import connectDB from "@/lib/db";
 import Product from "@/models/Product";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.GEMINI_API_KEY,
 });
+
+
 export async function POST(request) {
     const { query} = await request.json();
+    const aiRes = await client.responses.create({
+    model: "gemini-1.3",
+    messages: [
+    {
+      role: "user",
+      content: "Convert this into a short product keyword : " + query,
+    },
+  ],
+});
+
+    const keyword = aiRes.output[0].content[0].trim();
     await connectDB();
     const products = await Product.find({
-        title: { $regex: query, $options: "i" },
+        title: { $regex: keyword, $options: "i" },
     });
 
     return Response.json(products);

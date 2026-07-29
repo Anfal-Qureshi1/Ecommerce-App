@@ -13,8 +13,16 @@ export default function Home() {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
-  const handleSearch = () => {
-    alert('Searching for: ' + query);
+  const handleSearch = async () => {
+    const res = await fetch("/api/ai-search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+    const data = await res.json();
+    setProducts(data);
   };
   
   return (
