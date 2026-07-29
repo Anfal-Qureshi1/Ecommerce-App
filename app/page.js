@@ -35,7 +35,7 @@ export default function Home() {
               key={product._id || product.title}
               className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
             >
-              <div className="aspect-[4/3] bg-gray-100">
+              <div className="aspect-\[4/3] bg-gray-100">
                 {product.image ? (
                   <img src={product.image} alt={product.title} className="h-full w-full object-cover" />
                 ) : (
