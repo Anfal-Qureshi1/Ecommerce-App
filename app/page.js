@@ -13,7 +13,8 @@ export default function Home() {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
-  const handleSearch = async () => {
+ const handleSearch = async () => {
+  try {
     const res = await fetch("/api/ai-search", {
       method: "POST",
       headers: {
@@ -21,9 +22,17 @@ export default function Home() {
       },
       body: JSON.stringify({ query }),
     });
+
     const data = await res.json();
+
+    console.log("Search results:", data);
+
     setProducts(data);
-  };
+
+  } catch (error) {
+    console.error("Search error:", error);
+  }
+};
   
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
@@ -36,14 +45,16 @@ export default function Home() {
           placeholder="Search products..."
           className="mb-6 w-full rounded-md border border-gray-300 bg-white py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
-        <button className = "rounded-md bg-gray-600 py-2 px-4 mb-4 text-black hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 onClick = {handleSearch}">Search</button>
+        <button
+        onClick={handleSearch}
+        className="rounded-md bg-gray-600 py-2 px-4 mb-4 text-black hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Search</button>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
             <article
               key={product._id || product.title}
               className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
             >
-              <div className="aspect-\[4/3] bg-gray-100">
+              <div className="aspect-[4/3] bg-gray-100">
                 {product.image ? (
                   <img src={product.image} alt={product.title} className="h-full w-full object-cover" />
                 ) : (
