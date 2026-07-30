@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@google/genai": "^2.13.0",
     "axios": "^1.18.1",
     "mongodb": "^7.5.0",
     "mongoose": "^9.8.0",
