@@ -17,34 +17,70 @@ export async function POST(request) {
                 {
                     role: "system",
                     content:
-                        "Return only one keyword. No explanation.",
+                        "Generate exactly 10 short search keywords related to the user's query. Return ONLY comma-separated keywords and nothing else.",
                 },
                 {
                     role: "user",
                     content: query,
                 },
             ],
+            temperature: 0.3,
         });
 
-        const keyword = completion.choices[0].message.content.trim();
+        // AI response (string)
+        const keywordString = completion.choices[0].message.content.trim();
+
+        console.log("User Query:", query);
+        console.log("Generated keywords:", keywordString);
+
+        // Convert string to array
+        const keywords = keywordString
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+
+        console.log("Keyword Array:", keywords);
+
+        // Create regex pattern
+        const keywordRegex = keywords.join("|");
 
         await connectDB();
 
         const products = await Product.find({
             $or: [
-                { title: { $regex: keyword, $options: "i" } },
-                { description: { $regex: keyword, $options: "i" } },
-                { category: { $regex: keyword, $options: "i" } },
+                {
+                    title: {
+                        $regex: keywordRegex,
+                        $options: "i",
+                    },
+                },
+                {
+                    description: {
+                        $regex: keywordRegex,
+                        $options: "i",
+                    },
+                },
+                {
+                    category: {
+                        $regex: keywordRegex,
+                        $options: "i",
+                    },
+                },
             ],
         });
 
         return Response.json(products);
+
     } catch (error) {
-        console.error(error);
+        console.error("AI Search Error:", error);
 
         return Response.json(
-            { error: "AI search failed" },
-            { status: 500 }
+            {
+                error: "AI search failed",
+            },
+            {
+                status: 500,
+            }
         );
     }
 }
