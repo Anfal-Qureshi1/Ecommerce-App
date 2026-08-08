@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import CartWidget from "./cart/CartWidget";
 
 export default function Navbar() {
   return (
@@ -16,12 +17,13 @@ export default function Navbar() {
             <Link href="/" className="text-sm hover:underline">
               Home
             </Link>
+            <Link href="/products" className="text-sm hover:underline">
+              Products
+            </Link>
             <Link href="/about" className="text-sm hover:underline">
               About
             </Link>
-            <Link href="/checkout" className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-              Checkout
-            </Link>
+            <CartWidget />
           </nav>
         </div>
       </div>
