@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import CartButton from "./components/cart/CartButton";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -9,7 +11,14 @@ export default function Home() {
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) =>
+        setProducts(
+          data.map((product) => ({
+            ...product,
+            _id: String(product._id),
+          }))
+        )
+      )
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
@@ -27,7 +36,12 @@ export default function Home() {
 
     console.log("Search results:", data);
 
-    setProducts(data);
+    setProducts(
+      data.map((product) => ({
+        ...product,
+        _id: String(product._id),
+      }))
+    );
 
   } catch (error) {
     console.error("Search error:", error);
@@ -54,25 +68,37 @@ export default function Home() {
               key={product._id || product.title}
               className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
             >
-              <div className="aspect-[4/3] bg-gray-100">
-                {product.image ? (
-                  <img src={product.image} alt={product.title} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-sm text-gray-400">
-                    No image
-                  </div>
-                )}
-              </div>
-
-              <div className="p-5">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-                    {product.category}
-                  </span>
-                  <span className="text-lg font-semibold text-gray-900">${product.price}</span>
+              <Link href={`/products/${String(product._id)}`} className="block">
+                <div className="aspect-[4/3] bg-gray-100">
+                  {product.image ? (
+                    <img src={product.image} alt={product.title} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm text-gray-400">
+                      No image
+                    </div>
+                  )}
                 </div>
-                <h2 className="mb-2 text-xl font-semibold text-gray-900">{product.title}</h2>
-                <p className="text-sm text-gray-600">{product.description}</p>
+
+                <div className="p-5">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+                      {product.category}
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900">${product.price}</span>
+                  </div>
+                  <h2 className="mb-2 text-xl font-semibold text-gray-900">{product.title}</h2>
+                  <p className="text-sm text-gray-600">{product.description}</p>
+                </div>
+              </Link>
+              <div className="p-5 border-t border-gray-200">
+                <CartButton
+                  product={{
+                    _id: String(product._id),
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                  }}
+                />
               </div>
             </article>
           ))}

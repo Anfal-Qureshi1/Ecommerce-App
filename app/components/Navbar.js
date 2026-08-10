@@ -17,11 +17,11 @@ export default function Navbar() {
             <Link href="/" className="text-sm hover:underline">
               Home
             </Link>
-            <Link href="/products" className="text-sm hover:underline">
-              Products
-            </Link>
             <Link href="/about" className="text-sm hover:underline">
               About
+            </Link>
+            <Link href="/checkout" className="text-sm hover:underline">
+              Checkout
             </Link>
             <CartWidget />
           </nav>
