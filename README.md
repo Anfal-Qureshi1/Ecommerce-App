@@ -1,40 +1,126 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI-Assisted E-commerce App
 
-## Getting Started
+A Next.js e-commerce prototype that combines a MongoDB product catalog, a browser-persisted shopping cart, and AI-assisted product search.
 
-First, run the development server:
+> **Project status:** Prototype / learning project. Product browsing, cart behavior, database-backed products, and AI-assisted search are implemented. Checkout is currently a front-end demonstration and does not process payments or persist orders.
+
+## Highlights
+
+- MongoDB-backed product catalog
+- Product listing and product-detail pages
+- Shopping cart with quantity controls
+- Cart persistence using browser `localStorage`
+- Natural-language product search
+- AI-generated search keywords using the Groq API through the OpenAI-compatible client
+- Responsive UI built with Next.js and Tailwind CSS
+- Development seed route for sample product data
+- Basic checkout form prototype
+
+## How the AI search works
+
+The search flow is intentionally simple:
+
+```text
+User query
+   ↓
+Groq-hosted Llama model
+   ↓
+10 short related keywords
+   ↓
+MongoDB regex search
+   ↓
+Matching products
+```
+
+The implementation currently uses `llama-3.1-8b-instant` to turn a user's query into related search terms, then searches product titles, descriptions, and categories in MongoDB.
+
+## Tech stack
+
+| Area | Technology |
+| --- | --- |
+| Framework | Next.js 16 |
+| UI | React 19, Tailwind CSS 4 |
+| Database | MongoDB, Mongoose |
+| AI search | Groq API, OpenAI-compatible SDK |
+| State | React Context + localStorage |
+| Tooling | ESLint, npm |
+
+## Main project structure
+
+```text
+Ecommerce-App/
+├── app/
+│   ├── api/
+│   │   ├── ai-search/
+│   │   ├── products/
+│   │   └── seed/
+│   ├── cart/
+│   ├── checkout/
+│   ├── components/
+│   ├── products/[id]/
+│   └── page.js
+├── lib/
+│   └── db.js
+├── models/
+│   └── Product.js
+├── public/
+├── package.json
+└── README.md
+```
+
+## Run locally
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment variables
+
+Create a `.env.local` file:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+GROQ_API_KEY=your_groq_api_key
+```
+
+### 3. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 4. Optional sample data
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The repository includes a development seed endpoint at `/api/seed`. Its current implementation clears the Product collection and inserts sample products, so it should only be used with a development database.
 
-## Learn More
+## Current scope
 
-To learn more about Next.js, take a look at the following resources:
+Implemented:
+- Product catalog retrieval from MongoDB
+- Product detail navigation
+- Add/remove/update cart items
+- Cart persistence in the browser
+- AI-assisted product search
+- Basic checkout form UI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Not yet implemented:
+- Payment processing
+- Persistent orders
+- Production authentication/authorization
+- Inventory management
+- Production-grade search ranking
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+These boundaries are intentional in this repository: it is presented as an evolving e-commerce prototype, not as a production store.
 
-## Deploy on Vercel
+## Security note
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Keep `MONGO_URI` and `GROQ_API_KEY` in environment files and never commit real credentials.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# Ecommerce-App
->>>>>>> a716b376acb23666c5947fe802011dd731ffe2fa
+## Author
+
+**Anfal Qureshi**  
+Computer Science student building practical web, database, and AI-integrated applications.
